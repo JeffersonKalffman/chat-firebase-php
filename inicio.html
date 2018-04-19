@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<div>
+    <fieldset id="fieldsetLogin" class="fieldset-box" onautocomplete="on">
+        <p style="text-align: center; font-size: 30px; margin: 0">
+            Bem vindo de Volta
+        </p>
+
+        <div>
+            <label>E-mail</label><br/>
+            <input id="iEmailLogin" type="email" placeholder="usuario@dominio.com">
+        </div>
+
+        <div>
+            <label>Senha</label><br/>
+            <input id="iPasswordLogin" type="password" placeholder="pastelAssado123">
+        </div>
+
+        <div>
+            <a href="#" onclick="forgotPass()">
+                <div class="button-form">
+                    ESQUECI MINHA SENHA
+                </div>
+            </a>
+
+            <a href="#" onclick="signUp()">
+                <div class="button-form">
+                    CADASTRE-SE
+                </div>
+            </a>
+
+            <a href="#" onclick="signIn()">
+                <div class="button-form">
+                    LOGAR
+                </div>
+            </a>
+        </div>
+    </fieldset>
+
+    <fieldset id="fieldsetCad" class="fieldset-box">
+        <p style="text-align: center; font-size: 30px; margin: 0">
+            Cadastre-se gratuido
+        </p>
+
+        <div>
+            <label for="iNameCad">Nome</label><br/>
+            <input id="iNameCad" type="text" placeholder="Ex: Francino Silva">
+        </div>
+
+        <div>
+            <label for="iEmailCad">E-mail</label><br/>
+            <input id="iEmailCad" type="email" placeholder="Ex: francino_silva@gmail.com">
+        </div>
+
+        <div>
+            <label for="iPasswordCad">Senha</label><br/>
+            <input id="iPasswordCad" type="password" placeholder="******">
+        </div>
+
+        <div>
+            <label>Confirmar senha</label><br/>
+            <input id="iConfirmPasswordCad" type="password" placeholder="******">
+        </div>
+
+        <div>
+            <a href="#">
+                <div class="button-form">
+                    VOLTAR
+                </div>
+            </a>
+            <a href="#">
+                <div class="button-form">
+                    CRIAR
+                </div>
+            </a>
+        </div>
+    </fieldset>
+
+    <fieldset id="fieldsetSuccess" class="fieldset-box">
+        <div class="sa" style="display: block;">
+            <div class="sa-success">
+                <div class="sa-success-tip"></div>
+                <div class="sa-success-long"></div>
+                <div class="sa-success-placeholder"></div>
+                <div class="sa-success-fix"></div>
+            </div>
+            <div style="margin: 20px 0 10px 0; color: #111111;">
+                <p style="margin: 0 0 10px 0; text-align: center">Sucesso</p>
+                <p style="margin: 0; text-align: center">Seu cadastro foi efetivado com sucesso!!</p>
+            </div>
+            <a href="#">
+                <div class="button-form">
+                    RETORNAR
+                </div>
+            </a>
+        </div>
+    </fieldset>
+</div>
