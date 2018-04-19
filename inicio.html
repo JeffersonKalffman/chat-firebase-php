@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div>
     <fieldset id="fieldsetLogin" class="fieldset-box" onautocomplete="on">
-        <p style="text-align: center; font-size: 30px; margin: 0">
+        <p class="fieldset-title">
             Bem vindo de Volta
         </p>
 
@@ -16,19 +16,19 @@
         </div>
 
         <div>
-            <a href="#" onclick="forgotPass()">
+            <a href="#" onclick="loadForgotForm()">
                 <div class="button-form">
                     ESQUECI MINHA SENHA
                 </div>
             </a>
 
-            <a href="#" onclick="signUp()">
+            <a href="#" onclick="loadCadForm()">
                 <div class="button-form">
                     CADASTRE-SE
                 </div>
             </a>
 
-            <a href="#" onclick="signIn()">
+            <a href="#" onclick="loginfAUser()">
                 <div class="button-form">
                     LOGAR
                 </div>
@@ -37,8 +37,8 @@
     </fieldset>
 
     <fieldset id="fieldsetCad" class="fieldset-box">
-        <p style="text-align: center; font-size: 30px; margin: 0">
-            Cadastre-se gratuido
+        <p class="fieldset-title">
+            Cadastre-se gratuitamente
         </p>
 
         <div>
@@ -57,19 +57,43 @@
         </div>
 
         <div>
-            <label>Confirmar senha</label><br/>
+            <label for="iConfirmPasswordCad">Confirmar senha</label><br/>
             <input id="iConfirmPasswordCad" type="password" placeholder="******">
         </div>
 
         <div>
-            <a href="#">
+            <a href="#" onclick="loadLoginForm()">
                 <div class="button-form">
                     VOLTAR
                 </div>
             </a>
-            <a href="#">
+            <a href="#" onclick="createNewUser()">
                 <div class="button-form">
                     CRIAR
+                </div>
+            </a>
+        </div>
+    </fieldset>
+
+    <fieldset id="fieldsetForgot" class="fieldset-box">
+        <p class="fieldset-title">
+            Recuperação de senha pelo email
+        </p>
+
+        <div>
+            <label for="iEmailForgot">E-mail</label><br/>
+            <input id="iEmailForgot" type="email" placeholder="email@dominio.com">
+        </div>
+
+        <div>
+            <a href="#" onclick="loadLoginForm()">
+                <div class="button-form">
+                    VOLTAR
+                </div>
+            </a>
+            <a href="#" onclick="forgotUserPassword()">
+                <div class="button-form">
+                    ENVIAR
                 </div>
             </a>
         </div>
@@ -87,7 +111,7 @@
                 <p style="margin: 0 0 10px 0; text-align: center">Sucesso</p>
                 <p style="margin: 0; text-align: center">Seu cadastro foi efetivado com sucesso!!</p>
             </div>
-            <a href="#">
+            <a href="#" onclick="loadLoginForm()">
                 <div class="button-form">
                     RETORNAR
                 </div>

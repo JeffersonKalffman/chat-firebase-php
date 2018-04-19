@@ -1,6 +1,6 @@
 <?php
 $valido = $_GET["logado"];
-if($valido === "true"){
+if ($valido === "true") {
     readfile('chat.html');
 }else{
     readfile('inicio.html');

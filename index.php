@@ -17,10 +17,28 @@
             storageBucket: "chat-kalffman.appspot.com",
             messagingSenderId: "295585241253"
         };
-        let fbaseDatabase;
-        let fbaseAuth;
-        let fbaseAuthUser;
+        let fDBRef;
+        let fDBUserRef;
+        let fDBUser;
+        let fA;
+        let fAUser;
         let divContent;
+
+        let fieldsetLogin;
+        let fieldsetCad;
+        let fieldsetForgot;
+        let fieldsetSuccess;
+
+        let iEmailLogin;
+        let iPasswordLogin;
+
+        let iNameCad;
+        let iEmailCad;
+        let iPasswordCad;
+        let iConfirmPasswordCad;
+
+        let iEmailForgot;
+
     </script>
     <style type="text/css">
         .sa {
@@ -170,7 +188,7 @@
             }
         }
     </style>
-     <style type="text/css">
+    <style type="text/css">
 
         *{
             font-family: Titillium Web, sans-serif;
@@ -289,6 +307,18 @@
             color: #FFFFFF;
             font-size: 17px;
             border: none;
+
+            /*Animation*/
+            -webkit-animation:bounce-in 1s ease-in-out 0s 1 normal;
+            -moz-animation:bounce-in 1s ease-in-out 0s 1 normal;
+            -ms-animation:bounce-in 1s ease-in-out 0s 1 normal;
+            animation:bounce-in 1s ease-in-out 0s 1 normal;
+        }
+
+        .fieldset-title{
+            text-align: center;
+            font-size: 30px;
+            margin: 0;
         }
 
         .fieldset-box > div {
@@ -320,6 +350,35 @@
             .fieldset-box > :last-child{
                 display: block;
             }
+            #content{
+                width: 75%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #content{
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #content{
+                width: 50%;
+            }
+        }
+
+        @-webkit-keyframes bounce-in {
+            0%{ opacity: 0; -webkit-transform: scale(.3); transform: scale(.3); }
+            50%{ opacity: 1; -webkit-transform: scale(1.0); transform: scale(1.0); }
+            70%{ -webkit-transform: scale(0.9); transform: scale(0.9); }
+            100%{ -webkit-transform: scale(1); transform: scale(1); }
+        }
+
+        @keyframes bounce-in {
+            0%{ opacity: 0; transform: scale(.3); }
+            50%{ opacity: 1; transform: scale(1.0); }
+            70%{ transform: scale(0.9); }
+            100%{ transform: scale(1); }
         }
     </style>
 </head>
@@ -327,9 +386,8 @@
     <nav>
     </nav>
 
-    <main>
-        <i class="material-icons">cloud</i>
-        <div id="content" style="margin: 0 auto; width: 50%">
+    <main style="margin: 5% 0 0 0">
+        <div id="content" style="margin: 0 auto;">
         </div>
     </main>
 
@@ -338,55 +396,211 @@
     </footer>
 
     <script type="text/javascript">
-        divContent = $('#content');
-        updateUI();
         firebase.initializeApp(fbaseConfig);
-        fbaseAuth = firebase.auth();
-        fbaseDatabase = firebase.database();
+        fDBRef = firebase.database();
+        fA = firebase.auth();
+        divContent = $('#content');
+        let htmlContent = `<div> Carregando... <div>`;
+        divContent.html(htmlContent);
 
-        function loginUser( email, password ) {
-            fbaseAuth.signInWithEmailAndPassword( email, password ).catch(function( err ) {
+        function loginfAUser() {
+            fA.signInWithEmailAndPassword( iEmailLogin.val(), iPasswordLogin.val() ).catch(function( err ) {
                 let errorCode = err.code;
                 let errorMessage = err.message;
-            });
-            fbaseAuth.onAuthStateChanged(function ( user ) {
-                console.log( user );
-                if ( user.uid ){
-                    fbaseAuthUser = user;
-                } else {
+                switch (errorCode) {
+                    case 'auth/wrong-password':
+                        alertaErro('Email e senha não conferem!\n\n'+errorMessage);
+                        break;
+
+                    case 'auth/invalid-email':
+                        alertaErro('Email com formato inválido!\n\n'+errorMessage);
+                        break;
+
+                    case 'auth/user-disabled':
+                        alertaErro('Email correspondido está desabilitado!\n\n'+errorMessage);
+                        break;
+
+                    case 'auth/user-not-found':
+                        alertaErro('Usuário não encontrado!\n\n'+errorMessage);
+                        break;
+
+                    default:
+                        alertaErro('Erro\n\n'+errorMessage);
+                        break;
                 }
-                updateUI();
             });
+            listenfAUser();
         }
 
-        function createNewUserEmail( email, password ) {
-            fbaseAuth.createUserWithEmailAndPassword( email, password ).catch( function (err) {
+        function logoutfAUser(){
+            fAUser = null;
+            let unbs = fA.onAuthStateChanged(function () {
+                alert("Deslogado da sessão");
+            });
+            unbs();
+            fA.signOut();
+            updateUI();
+        }
+        
+        function createNewUser() {
+            if (iPasswordCad.val() == iConfirmPasswordCad.val()) {
+                fA.createUserWithEmailAndPassword(iEmailCad.val(), iPasswordCad.val()).then(function () {
+                    loadsucces();
+                }).catch(function (err) {
+                    let errorCode = err.code;
+                    let errorMessage = err.message;
+                    switch (errorCode){
+
+                        case 'auth/email-already-in-use':
+                            alertaErro('Este e-mail já está em uso!\n\n'+errorMessage);
+                            break;
+
+                        case 'auth/invalid-email':
+                            alertaErro('E-mail com formato inválido!\n\n'+errorMessage);
+                            break;
+
+                        case 'auth/operation-not-allowed':
+                            alertaErro('Cadastro não autorizado!\n\n'+errorMessage);
+                            break;
+
+                        case 'auth/weak-password':
+                            alertaErro('Senha muito curta!\n(Mínimo 6 dígitos)\n\n'+errorMessage);
+                            break;
+
+                        default:
+                            alertaErro('Erro:\n\n'+errorMessage);
+                            break;
+                    }
+                });
+            }else{
+                alertaErro('Senhas não conferem')
+            }
+        }
+
+        function forgotUserPassword() {
+            auth.sendPasswordResetEmail(iEmailForgot.val()).then(function() {
+                loadsucces();
+            }).catch(function(err) {
                 let errorCode = err.code;
                 let errorMessage = err.message;
-            });
-            fbaseAuth.onAuthStateChanged(function ( user ) {
-                if ( user ){
+                switch (errorCode){
 
-                } else {
+                    case 'auth/invalid-email':
+                        alertaErro('E-mail com formato inválido!\n\n'+errorMessage);
+                        break;
 
+                    case 'auth/invalid-continue-uri':
+                        alertaErro('Nome de domínio inválido!\n\n'+errorMessage);
+                        break;
+
+                    case 'auth/unauthorized-continue-uri\n':
+                        alertaErro('Erro!\n\n'+errorMessage);
+                        break;
+
+                    case 'auth/user-not-found':
+                        alertaErro('Usuáio não encontrado!\n\n'+errorMessage);
+                        break;
+
+                    default:
+                        alertaErro('Erro:\n\n'+errorMessage);
+                        break;
                 }
             });
         }
 
         function updateUI() {
-            if(fbaseAuthUser){
-                $.get( "serverPages.php", {'logado': true}, function ( data ) {
-                    divContent.html(data);
-                    $('#chatBody').scrollTop(divContent.height());
+            if(fAUser !== null && fAUser !== undefined){
+                $.get( "serverPages.php", { 'logado' : true }, function ( data ) {
+                    htmlContent = data;
+                    divContent.html(htmlContent);
                 });
             }else{
-                $.get( "serverPages.php", {'logado': false}, function ( data ) {
-                    divContent.html(data);
-                    $('#chatBody').scrollTop(divContent.height());
+                $.get( "serverPages.php", { 'logado' : false }, function ( data ) {
+                    htmlContent = data;
+                    divContent.html(htmlContent);
+
+                    //fieldSet Login
+                    fieldsetLogin = $("#fieldsetLogin");
+                    iEmailLogin = $("#iEmailLogin");
+                    iPasswordLogin = $("#iPasswordLogin");
+
+                    //fieldSet novo usuário
+                    fieldsetCad = $("#fieldsetCad");
+                    iNameCad = $("#iNameCad");
+                    iEmailCad = $("#iEmailCad");
+                    iPasswordCad = $("#iPasswordCad");
+                    iConfirmPasswordCad = $("#iConfirmPasswordCad");
+
+                    //fieldSet Esqueci a senha
+                    fieldsetForgot = $("#fieldsetForgot");
+                    iEmailForgot = $("#iEmailForgot");
+
+                    fieldsetSuccess = $("#fieldsetSuccess");
+                    loadLoginForm();
                 });
             }
+            $('#chatBody').scrollTop(divContent.height());
         }
 
+        function  loadLoginForm(){
+            fieldsetLogin.css('display','block');
+            fieldsetCad.css('display','none');
+            fieldsetForgot.css('display','none');
+            fieldsetSuccess.css('display','none')
+        }
+
+        function loadCadForm() {
+            fieldsetLogin.css('display','none');
+            fieldsetCad.css('display','block');
+            fieldsetForgot.css('display','none');
+            fieldsetSuccess.css('display','none')
+        }
+
+        function loadForgotForm() {
+            fieldsetLogin.css('display','none');
+            fieldsetCad.css('display','none');
+            fieldsetForgot.css('display','block');
+            fieldsetSuccess.css('display','none')
+        }
+
+        function loadsucces() {
+            fieldsetLogin.css('display','none');
+            fieldsetCad.css('display','none');
+            fieldsetForgot.css('display','none');
+            fieldsetSuccess.css('display','block');
+        }
+
+        function listenfAUser() {
+            fA.onAuthStateChanged(function ( user ) {
+                fAUser = user;
+                if ( fAUser !== null){
+                    fDBUserRef = fDBRef.ref(`users/${user.uid}`);
+                    fDBUserRef.once('value').then(function (snapshot) {
+                        if(snapshot.val() === null){
+                            fDBUserRef.set({
+                                uid: fAUser.uid,
+                                name: iNameCad.val(),
+                                contact: {
+                                    email: iEmailCad.val()
+                                }
+                            });
+                        }else{
+                            fDBUser = snapshot.val();
+                        }
+                        updateUI()
+                    });
+                } else {
+                    fAUser = null;
+                    updateUI();
+                }
+            });
+        }
+
+        updateUI();
+
+        function alertaErro(msg) {
+            alert(msg);
+        }
     </script>
 </body>
 </html>
